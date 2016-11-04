@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="5dp"
+    android:layout_margin="15dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Name xxxxo"
+        android:id="@+id/tvShopName"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/imgShopThumb"
+        android:layout_toEndOf="@+id/imgShopThumb"
+        android:layout_marginLeft="15dp"
+        android:layout_marginStart="15dp" />
+
+    <ImageView
+        android:id="@+id/imgShopThumb"
+        android:layout_height="60dp"
+        android:layout_width="60dp"
+        android:src="@drawable/nothumb"
+        android:layout_alignTop="@+id/tvShopName"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Description"
+        android:id="@+id/tvShopAddress"
+        android:layout_below="@+id/tvShopName"
+        android:layout_alignLeft="@+id/tvShopName"
+        android:layout_marginTop="2dp" />
+
+    <TextView
+        android:text="5€"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvPrice"
+        tools:text="5€"
+        android:fontFamily="sans-serif"
+        android:textSize="30sp"
+        android:layout_alignBottom="@+id/tvShopAddress"
+        android:layout_alignParentEnd="true" />
+</RelativeLayout>

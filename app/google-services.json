@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "416995541853",
+    "firebase_url": "https://kebab-f5a8b.firebaseio.com",
+    "project_id": "kebab-f5a8b",
+    "storage_bucket": "kebab-f5a8b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:416995541853:android:7a6a0e375ecb3806",
+        "android_client_info": {
+          "package_name": "com.kelvinhado.kebab"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "416995541853-407vq33aa00tfh6tq3kon88d8kra8o2v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kelvinhado.kebab",
+            "certificate_hash": "92B70EC1A4DEE1BDF05E67FB3D15DBBE2147551A"
+          }
+        },
+        {
+          "client_id": "416995541853-sh33n7r18v3sfdsecplgbdqd4cj994mo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyADfG4jpEnkBi6Z8BfF6IArNvft0ky8jHA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "416995541853-sh33n7r18v3sfdsecplgbdqd4cj994mo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
