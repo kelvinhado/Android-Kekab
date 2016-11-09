@@ -1,6 +1,7 @@
 package com.kelvinhado.kebab;
 
 
+import android.net.Uri;
 import android.support.v4.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,7 +22,10 @@ import android.widget.TextView;
 import com.kelvinhado.kebab.model.Shop;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, ShopListFragment.OnShopSelectedListenner {
+        implements  NavigationView.OnNavigationItemSelectedListener,
+                    MapsFragment.OnShopSelectedListenner,
+                    ShopListFragment.OnShopSelectedListenner,
+                    ShopPreviewFragment.OnShopPreviewFragmentInteractionListener {
 
     private TextView tv2;
 
@@ -101,8 +105,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_gallery) {
-            Intent intent = new Intent(this, MapsActivity.class);
-            startActivity(intent);
+
 
         } else if (id == R.id.nav_slideshow) {
             Intent intent = new Intent(this, ShopDisplayActivity.class);
@@ -163,7 +166,30 @@ public class MainActivity extends AppCompatActivity
 //    }
 
     @Override
-    public void onShopSelected(Shop shop) {
+    public void onShopSelectedFromList(String shopId) {
+
+        Fragment fragment = ShopPreviewFragment.newInstance(shopId);
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.addToBackStack(null);
+        ft.replace(R.id.frame_container, fragment);
+        ft.commit();
 
     }
+
+    @Override
+    public void onShopSelectedFromMap(String shopId) {
+
+        Fragment fragment = ShopPreviewFragment.newInstance(shopId);
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.addToBackStack(null);
+        ft.replace(R.id.frame_container, fragment);
+        ft.commit();
+    }
+
+    @Override
+    public void onFragmentInteraction() {
+
+    }
+
+
 }

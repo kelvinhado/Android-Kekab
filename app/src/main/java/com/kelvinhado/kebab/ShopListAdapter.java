@@ -56,9 +56,9 @@ public class ShopListAdapter extends ArrayAdapter {
 
         // we finally set our values here
         Shop shop = listShop.get(position);
-        holder.shopName.setText(shop.getName());
-        holder.shopAddress.setText(shop.getAddress());
-        holder.shopPrice.setText(shop.getPrice().toString());
+        holder.shopName.setText(""+shop.getName());
+        holder.shopAddress.setText(""+shop.getAddress());
+        holder.shopPrice.setText(""+shop.getPrice().toString());
 //        holder.shopPicture.setImageDrawable(shop.getLastName());
         return convertView;
 

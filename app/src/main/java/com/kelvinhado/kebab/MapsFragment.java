@@ -1,13 +1,12 @@
 package com.kelvinhado.kebab;
 
-import android.content.pm.PackageManager;
+
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,13 +14,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -30,11 +28,19 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.kelvinhado.kebab.database.ShopRepository;
 import com.kelvinhado.kebab.model.Shop;
+import com.kelvinhado.kebab.model.Shops;
 
-public class MapsFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
+import java.util.HashMap;
+import java.util.WeakHashMap;
 
-    MapView mapView;
-    GoogleMap map;
+
+public class MapsFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener {
+
+    private MapView mapView;
+    OnShopSelectedListenner mListener = null;
+    private WeakHashMap<Marker, String> markerMap;
+    private GoogleMap map;
+    static protected Shops shops;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -52,6 +58,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         mapView.onResume();
         mapView.getMapAsync(this);
 
+
         // remove floating button
         FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
         fab.setVisibility(View.INVISIBLE);
@@ -63,7 +70,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             public void onClick(View v) {
                 Fragment fragment = new ShopListFragment();
                 FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                ft.setCustomAnimations(R.anim.enter_from_bottom,android.R.anim.fade_out, android.R.anim.fade_in, R.anim.exit_to_bottom);
+                ft.setCustomAnimations(R.anim.enter_from_bottom, R.anim.none);
                 ft.replace(R.id.frame_container, fragment);
                 ft.addToBackStack(null);
                 ft.commit();
@@ -72,14 +79,18 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     }
 
 
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.map = googleMap;
+        map.setPadding(0,0,0,160);
         map.getUiSettings().setMapToolbarEnabled(false);
         map.getUiSettings().setZoomControlsEnabled(false);
         map.getUiSettings().setMyLocationButtonEnabled(true);
         map.setMaxZoomPreference(18);
-        loadMarkers();
+        map.setOnMarkerClickListener(this);
+        map.setOnInfoWindowClickListener(this);
+        loadShops();
 
 //        checkLocationPermission();
         // move camera to paris
@@ -88,12 +99,30 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
     }
 
-    @Override
-    public boolean onMarkerClick(Marker marker) {
-        Toast.makeText(getActivity().getApplicationContext(), marker.getTitle(), Toast.LENGTH_SHORT).show();
-        return false;
+
+    //TODO warning temporal method
+    public static Shops getDisplayedShops(){
+        return shops;
     }
 
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        marker.showInfoWindow();
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(marker.getPosition())   // Sets the center of the map to Mountain View
+                .zoom(14)                       // Sets the zoom
+//                .bearing(45)                    // Sets the orientation of the camera to east
+                .tilt(10)                       // Sets the tilt of the camera to 30 degrees
+                .build();                       // Creates a CameraPosition from the builder
+        map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        return true;
+    }
+
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        Log.d("LOGG", "infowindows clickec" + markerMap.get(marker));
+        mListener.onShopSelectedFromMap(markerMap.get(marker));
+    }
 
     @Override
     public void onResume() {
@@ -114,15 +143,24 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     }
 
 
-    public void loadMarkers(){
+    public void loadShops(){
+        //reinitialise shops list
+        shops = new Shops();
+        markerMap = new WeakHashMap<>();
+
         ShopRepository.shopRef.addValueEventListener(new ValueEventListener() { //addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
                     Shop shop = postSnapshot.getValue(Shop.class);
-                    map.addMarker(new MarkerOptions().position(new LatLng(shop.getLatitude(), shop.getLongitude())).title(shop.getName()));
+                    shops.add(shop);
+                    Marker marker = map.addMarker(new MarkerOptions()
+                            .position(new LatLng(shop.getLatitude(), shop.getLongitude()))
+                            .title(shop.getName())
+                            .snippet(shop.getPrice().toString())
+                            );
 
-                    Log.d("HELLO", ""+shop.getName());
+                    markerMap.put(marker, shop.getId());
                 }
             }
 
@@ -136,7 +174,28 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            mListener = (OnShopSelectedListenner) getActivity();
+        } catch (ClassCastException e) {
+            throw new ClassCastException(getActivity().toString()
+                    + " must implement OnShopSelectedListenner");
+        }
+    }
 
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+    public // Interface interne
+    interface OnShopSelectedListenner {
+        void onShopSelectedFromMap(String shopId);
+    }
 
 //    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
 //

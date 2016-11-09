@@ -16,11 +16,13 @@ public class Shop {
     private String address;
     private Double latitude;
     private Double longitude;
+    private String dateAdded;
+    private String description;
 
     public Shop() {
     }
 
-    public Shop(String id, String name, String rating, Double price, String address, Double latitude, Double longitude) {
+    public Shop(String id, String name, String rating, Double price, String address, Double latitude, Double longitude, String dateAdded, String description) {
         this.id = id;
         this.name = name;
         this.rating = rating;
@@ -84,5 +86,37 @@ public class Shop {
 
     public void setLongitude(Double longitude) {
         this.longitude = longitude;
+    }
+
+
+    public String getDateAdded() {
+        return dateAdded;
+    }
+
+    public void setDateAdded(String dateAdded) {
+        this.dateAdded = dateAdded;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    @Override
+    public String toString() {
+        return "Shop{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", rating='" + rating + '\'' +
+                ", price=" + price +
+                ", address='" + address + '\'' +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                ", dateAdded='" + dateAdded + '\'' +
+                ", description='" + description + '\'' +
+                '}';
     }
 }

@@ -50,10 +50,7 @@ public class ShopListFragment extends ListFragment {
     @Override
     public void onStart() {
         super.onStart();
-         Shops shops = new Shops();
-         shops.add(new Shop("1XCD", "Le bon gred", "3.5", 5.0, "12 rue clerc", 49.8534100, 2.3488000));
-         shops.add(new Shop("1XCE", "Le bon gred2", "3.6", 5.0, "13 rue clerc", 49.7534100, 2.4488000));
-         shops.add(new Shop("1XCF", "Le bon gred3", "3.7", 5.0, "14 rue clerc", 49.6534100, 2.5488000));
+        shops = MapsFragment.getDisplayedShops();
         populateListView(shops);
     }
 
@@ -77,6 +74,7 @@ public class ShopListFragment extends ListFragment {
         }
     }
 
+
     @Override
     public void onDetach() {
         super.onDetach();
@@ -87,7 +85,7 @@ public class ShopListFragment extends ListFragment {
     public void onListItemClick(ListView l, View v, int position, long id) {
         // Send the shop to the host activity
         Shop shop = (Shop) getListView().getItemAtPosition(position);
-        mListener.onShopSelected(shop);
+        mListener.onShopSelectedFromList(shop.getId());
     }
 
     /**
@@ -99,7 +97,7 @@ public class ShopListFragment extends ListFragment {
 
     public // Interface interne
     interface OnShopSelectedListenner {
-        void onShopSelected(Shop shop);
+        void onShopSelectedFromList(String shopId);
     }
 
 
